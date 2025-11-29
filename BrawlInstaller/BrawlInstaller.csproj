@@ -1,90 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7B20271C-5037-44A8-9E9B-F7E091C0A2C5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>BrawlInstaller</RootNamespace>
     <AssemblyName>BrawlInstaller</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants>TRACE</DefineConstants>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>BrawlInstaller.Program</StartupObject>
-  </PropertyGroup>
+
   <PropertyGroup>
     <ApplicationIcon>BrawlInstallerIcon.ico</ApplicationIcon>
+    <StartupObject>BrawlInstaller.Program</StartupObject>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="NuGet.Versioning, Version=6.12.1.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Versioning.6.12.1\lib\net472\NuGet.Versioning.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Activities" />
-    <Reference Include="System.Activities.Core.Presentation" />
-    <Reference Include="System.Activities.Presentation" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Design" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Messaging" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <PackageReference Include="Avalonia" Version="11.0.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+    <PackageReference Include="PixiEditor.ColorPicker" Version="3.4.1" />
+    <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="Velopack" Version="0.0.1053" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
+    <PackageReference Include="System.Xml.XDocument" Version="4.3.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    <ProjectReference Include="..\BrawlLib\BrawlLib.csproj" />
+    <ProjectReference Include="..\lavaKirbyHatManagerV2\lavaKirbyHatManagerV2.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="Behaviors\ContextMenuLeftClickBehavior.cs" />
     <Compile Include="Behaviors\ConverterBindableParameter.cs" />
     <Compile Include="Classes\Backup.cs" />
@@ -136,317 +96,91 @@
     <Compile Include="Classes\TrackedList.cs" />
     <Compile Include="Common\CompositionBootstrapper.cs" />
     <Compile Include="Common\ExtensionMethods.cs" />
-    <Compile Include="Enums\GamecubeButtons.cs" />
+    <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="Common\ViewModelBase.cs" />
     <Compile Include="Helpers\CursorWait.cs" />
     <Compile Include="Resources\Converters.cs" />
-    <Compile Include="Enums\CosmeticType.cs" />
-    <Compile Include="Enums\IdType.cs" />
-    <Compile Include="Enums\SSEUnlockStage.cs" />
     <Compile Include="Resources\BindingProxy.cs" />
-    <Compile Include="Services\CodeService.cs" />
-    <Compile Include="Services\ColorSmashService.cs" />
-    <Compile Include="Services\CosmeticService.cs" />
-    <Compile Include="Services\DialogService.cs" />
-    <Compile Include="Services\PackageService.cs" />
-    <Compile Include="Services\FighterService.cs" />
-    <Compile Include="Services\FileService.cs" />
-    <Compile Include="Services\SettingsService.cs" />
-    <Compile Include="Services\StageService.cs" />
-    <Compile Include="StaticClasses\Trophies.cs" />
-    <Compile Include="UserControls\FileBox.xaml.cs">
-      <DependentUpon>FileBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\WpfPropertyGrid.cs" />
     <Compile Include="Validation\BuildFilePathValidationRules.cs" />
     <Compile Include="Validation\FranchiseIconValidationRules.cs" />
     <Compile Include="Validation\PacFileNameValidationRules.cs" />
-    <Compile Include="ViewModels\Dialogs\RadioButtonViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\CheckListViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\DropDownViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\DialogViewModelBase.cs" />
-    <Compile Include="ViewModels\Fighter\FighterSettingsViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\ImageDropDownViewModel.cs" />
-    <Compile Include="ViewModels\Fighter\FighterTrophyViewModel.cs" />
-    <Compile Include="ViewModels\Files\FilesViewModel.cs" />
-    <Compile Include="ViewModels\MainControlsViewModel.cs" />
-    <Compile Include="ViewModels\Fighter\CosmeticViewModel.cs" />
-    <Compile Include="ViewModels\Fighter\CostumeViewModel.cs" />
-    <Compile Include="ViewModels\Fighter\FighterFileViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\MessageViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\NodeSelectorViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\MultiMessageViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\ProgressBarViewModel.cs" />
-    <Compile Include="ViewModels\Settings\FighterInfoViewModel.cs" />
-    <Compile Include="ViewModels\Fighter\FighterViewModel.cs" />
-    <Compile Include="ViewModels\Fighter\FranchiseIconViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\Settings\CosmeticSettingsViewModel.cs" />
-    <Compile Include="ViewModels\Settings\SettingsViewModel.cs" />
-    <Compile Include="ViewModels\Stage\StageCosmeticViewModel.cs" />
-    <Compile Include="ViewModels\Stage\StageEditorViewModel.cs" />
-    <Compile Include="ViewModels\Stage\StageListViewModel.cs" />
-    <Compile Include="ViewModels\Stage\StageViewModel.cs" />
-    <Compile Include="ViewModels\Dialogs\StringInputViewModel.cs" />
-    <Compile Include="ViewModels\Music\TracklistViewModel.cs" />
-    <Compile Include="ViewModels\Trophy\TrophyEditorViewModelBase.cs" />
-    <Compile Include="ViewModels\Trophy\TrophyEditorViewModel.cs" />
-    <Compile Include="ViewModels\Trophy\TrophyViewModel.cs" />
-    <Compile Include="Views\Dialogs\RadioButtonView.xaml.cs">
-      <DependentUpon>RadioButtonView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\CheckListView.xaml.cs">
-      <DependentUpon>CheckListView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\DropDownView.xaml.cs">
-      <DependentUpon>DropDownView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fighter\CosmeticView.xaml.cs">
-      <DependentUpon>CosmeticView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fighter\CostumeView.xaml.cs">
-      <DependentUpon>CostumeView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fighter\FighterFileView.xaml.cs">
-      <DependentUpon>FighterFileView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\MessageView.xaml.cs">
-      <DependentUpon>MessageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\NodeSelectorView.xaml.cs">
-      <DependentUpon>NodeSelectorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\MultiMessageView.xaml.cs">
-      <DependentUpon>MultiMessageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\ImageDropDownView.xaml.cs">
-      <DependentUpon>ImageDropDownView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fighter\FighterTrophyView.xaml.cs">
-      <DependentUpon>FighterTrophyView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\ProgressBarView.xaml.cs">
-      <DependentUpon>ProgressBarView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Files\FilesView.xaml.cs">
-      <DependentUpon>FilesView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Settings\FighterInfoView.xaml.cs">
-      <DependentUpon>FighterInfoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fighter\FighterSettingsView.xaml.cs">
-      <DependentUpon>FighterSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fighter\FighterView.xaml.cs">
-      <DependentUpon>FighterView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Fighter\FranchiseIconView.xaml.cs">
-      <DependentUpon>FranchiseIconView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainControlsView.xaml.cs">
-      <DependentUpon>MainControlsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainView.xaml.cs">
-      <DependentUpon>MainView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Settings\CosmeticSettingsView.xaml.cs">
-      <DependentUpon>CosmeticSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Settings\SettingsView.xaml.cs">
-      <DependentUpon>SettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Stage\StageCosmeticView.xaml.cs">
-      <DependentUpon>StageCosmeticView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Stage\StageEditorView.xaml.cs">
-      <DependentUpon>StageEditorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Stage\StageListView.xaml.cs">
-      <DependentUpon>StageListView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Stage\StageView.xaml.cs">
-      <DependentUpon>StageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Dialogs\StringInputView.xaml.cs">
-      <DependentUpon>StringInputView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Music\TracklistView.xaml.cs">
-      <DependentUpon>TracklistView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Trophy\TrophyEditorView.xaml.cs">
-      <DependentUpon>TrophyEditorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Trophy\TrophyView.xaml.cs">
-      <DependentUpon>TrophyView.xaml</DependentUpon>
-    </Compile>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\RelayCommand.cs" />
-    <Compile Include="Common\ViewModelBase.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Resources\Converters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Styles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\ViewModelViewMapping.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\FileBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Dialogs\RadioButtonView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Dialogs\CheckListView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Dialogs\DropDownView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Fighter\CosmeticView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Fighter\CostumeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Fighter\FighterFileView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Dialogs\MessageView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Dialogs\NodeSelectorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Dialogs\MultiMessageView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Dialogs\ImageDropDownView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Fighter\FighterTrophyView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Dialogs\ProgressBarView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Files\FilesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Settings\FighterInfoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Fighter\FighterSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Fighter\FighterView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Fighter\FranchiseIconView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MainControlsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MainView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Settings\CosmeticSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Settings\SettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Stage\StageCosmeticView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Stage\StageEditorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Stage\StageListView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Stage\StageView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Dialogs\StringInputView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Music\TracklistView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Trophy\TrophyEditorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Trophy\TrophyView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="UserControls\WpfPropertyGrid.cs" />
+    <Compile Include="Views\Dialogs\RadioButtonView.xaml.cs" />
+    <Compile Include="Views\Dialogs\CheckListView.xaml.cs" />
+    <Compile Include="Views\Dialogs\DropDownView.xaml.cs" />
+    <Compile Include="Views\Fighter\CosmeticView.xaml.cs" />
+    <Compile Include="Views\Fighter\CostumeView.xaml.cs" />
+    <Compile Include="Views\Fighter\FighterFileView.xaml.cs" />
+    <Compile Include="Views\Dialogs\MessageView.xaml.cs" />
+    <Compile Include="Views\Dialogs\NodeSelectorView.xaml.cs" />
+    <Compile Include="Views\Dialogs\MultiMessageView.xaml.cs" />
+    <Compile Include="Views\Dialogs\ImageDropDownView.xaml.cs" />
+    <Compile Include="Views\Fighter\FighterTrophyView.xaml.cs" />
+    <Compile Include="Views\Dialogs\ProgressBarView.xaml.cs" />
+    <Compile Include="Views\Files\FilesView.xaml.cs" />
+    <Compile Include="Views\Settings\FighterInfoView.xaml.cs" />
+    <Compile Include="Views\Fighter\FighterSettingsView.xaml.cs" />
+    <Compile Include="Views\Fighter\FighterView.xaml.cs" />
+    <Compile Include="Views\Fighter\FranchiseIconView.xaml.cs" />
+    <Compile Include="Views\MainControlsView.xaml.cs" />
+    <Compile Include="Views\MainView.xaml.cs" />
+    <Compile Include="Views\Settings\CosmeticSettingsView.xaml.cs" />
+    <Compile Include="Views\Settings\SettingsView.xaml.cs" />
+    <Compile Include="Views\Stage\StageCosmeticView.xaml.cs" />
+    <Compile Include="Views\Stage\StageEditorView.xaml.cs" />
+    <Compile Include="Views\Stage\StageListView.xaml.cs" />
+    <Compile Include="Views\Stage\StageView.xaml.cs" />
+    <Compile Include="Views\Dialogs\StringInputView.xaml.cs" />
+    <Compile Include="Views\Music\TracklistView.xaml.cs" />
+    <Compile Include="Views\Trophy\TrophyEditorView.xaml.cs" />
+    <Compile Include="Views\Trophy\TrophyView.xaml.cs" />
+    <Compile Include="App.xaml.cs" />
+    <Compile Include="MainWindow.xaml.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs" />
+    <Compile Include="Properties\Settings.Designer.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <Page Include="App.xaml" />
+    <Page Include="MainWindow.xaml" />
+    <Page Include="Resources\Converters.xaml" />
+    <Page Include="Resources\Styles.xaml" />
+    <Page Include="Resources\ViewModelViewMapping.xaml" />
+    <Page Include="UserControls\FileBox.xaml" />
+    <Page Include="Views\Dialogs\RadioButtonView.xaml" />
+    <Page Include="Views\Dialogs\CheckListView.xaml" />
+    <Page Include="Views\Dialogs\DropDownView.xaml" />
+    <Page Include="Views\Fighter\CosmeticView.xaml" />
+    <Page Include="Views\Fighter\CostumeView.xaml" />
+    <Page Include="Views\Fighter\FighterFileView.xaml" />
+    <Page Include="Views\Dialogs\MessageView.xaml" />
+    <Page Include="Views\Dialogs\NodeSelectorView.xaml" />
+    <Page Include="Views\Dialogs\MultiMessageView.xaml" />
+    <Page Include="Views\Dialogs\ImageDropDownView.xaml" />
+    <Page Include="Views\Fighter\FighterTrophyView.xaml" />
+    <Page Include="Views\Dialogs\ProgressBarView.xaml" />
+    <Page Include="Views\Files\FilesView.xaml" />
+    <Page Include="Views\Settings\FighterInfoView.xaml" />
+    <Page Include="Views\Fighter\FighterSettingsView.xaml" />
+    <Page Include="Views\Fighter\FighterView.xaml" />
+    <Page Include="Views\Fighter\FranchiseIconView.xaml" />
+    <Page Include="Views\MainControlsView.xaml" />
+    <Page Include="Views\MainView.xaml" />
+    <Page Include="Views\Settings\CosmeticSettingsView.xaml" />
+    <Page Include="Views\Settings\SettingsView.xaml" />
+    <Page Include="Views\Stage\StageCosmeticView.xaml" />
+    <Page Include="Views\Stage\StageEditorView.xaml" />
+    <Page Include="Views\Stage\StageListView.xaml" />
+    <Page Include="Views\Stage\StageView.xaml" />
+    <Page Include="Views\Dialogs\StringInputView.xaml" />
+    <Page Include="Views\Music\TracklistView.xaml" />
+    <Page Include="Views\Trophy\TrophyEditorView.xaml" />
+    <Page Include="Views\Trophy\TrophyView.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx" />
     <EmbeddedResource Include="Resources\DefaultSettings\ProjectPlusEx15\BuildSettings.json" />
     <EmbeddedResource Include="Resources\DefaultSettings\ProjectPlusEx15\FighterList.json" />
     <EmbeddedResource Include="Resources\DefaultSettings\ProjectPlus30\BuildSettings.json" />
@@ -466,20 +200,9 @@
     <EmbeddedResource Include="Resources\DefaultSettings\ProjectPlusEx16PM\FighterList.json" />
     <EmbeddedResource Include="Resources\DefaultSettings\ProjectPlusEx16PM\BuildSettings.json" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BrawlLib\BrawlLib.csproj">
-      <Project>{775df34b-397e-41e2-85d6-c3042f0b8c46}</Project>
-      <Name>BrawlLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\lavaKirbyHatManagerV2\lavaKirbyHatManagerV2.csproj">
-      <Project>{9dfd4208-0f96-4ae5-b6c6-444c54cde312}</Project>
-      <Name>lavaKirbyHatManagerV2</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="BrawlInstallerIcon.ico" />
     <Resource Include="Icons\ADSJ.png" />
     <Resource Include="Icons\AI.png" />
     <Resource Include="Icons\AIPD.png" />
@@ -543,51 +266,9 @@
     <Resource Include="Icons\Unknown.png" />
     <Resource Include="Icons\VIS.png" />
   </ItemGroup>
+
   <ItemGroup>
-    <Resource Include="BrawlInstallerIcon.ico" />
+    <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm">
-      <Version>8.4.0</Version>
-    </PackageReference>
-    <PackageReference Include="Crc32.NET">
-      <Version>1.2.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
-      <Version>1.1.122</Version>
-    </PackageReference>
-    <PackageReference Include="Ookii.Dialogs.Wpf">
-      <Version>5.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="PixiEditor.ColorPicker">
-      <Version>3.4.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.ComponentModel.Composition">
-      <Version>8.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Xml.XDocument">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="Velopack">
-      <Version>0.0.1053</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>if EXIST "$(SolutionDir)ColorSmash\target\i686-pc-windows-msvc\release\color_smash.exe" (
-  %25windir%25\system32\xcopy "$(SolutionDir)ColorSmash\target\i686-pc-windows-msvc\release\color_smash.exe" "$(TargetDir)" /Y /I
-)</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>if not '$(ConfigurationName)' == 'Documentation' (
-  if not '$(ConfigurationName)' == 'Doxygen' (
-    if not '$(ConfigurationName)' == 'Mono' (
-      if not '$(DeployOnBuild)' == 'true' (
-        cd $(SolutionDir)ColorSmash\
-        cargo build --release --target i686-pc-windows-msvc
-      )
-    )
-  )
-)</PreBuildEvent>
-  </PropertyGroup>
+
 </Project>

@@ -4,67 +4,87 @@ on:
   push:
     branches:
       - release
+
 permissions:
   contents: write
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        rid: [linux-arm, linux-arm64]  # 32-bit and 64-bit
+        arch-name: [arm32, arm64]
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq libgtk-3-0 libayatana-appindicator3-1
 
       - name: Get Version from JSON
         id: get-version
         shell: bash
         run: |
-            PACKAGE_JSON=$(jq -c . < BrawlInstaller/Resources/update.json)
-            if [ -z "$PACKAGE_JSON" ]; then
-              echo "Error: Failed to read update.json!"
-              exit 1
-            fi
-
-            VERSION=$(echo "$PACKAGE_JSON" | jq -r '.Version')
-
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          PACKAGE_JSON=$(jq -c . < BrawlInstaller/Resources/update.json)
+          if [ -z "$PACKAGE_JSON" ]; then
+            echo "Error: Failed to read update.json!"
+            exit 1
+          fi
+          VERSION=$(echo "$PACKAGE_JSON" | jq -r '.Version')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Echo Version
         run: echo "The version is ${{ steps.get-version.outputs.version }}"
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.3.1
-
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
 
       - name: Restore NuGet Packages
-        run: nuget restore BrawlInstaller.sln
+        run: dotnet restore BrawlInstaller.sln
 
-      - name: Build Solution
-        run: msbuild BrawlInstaller.sln /restore /t:Build /p:Configuration=Release /p:RunCodeAnalysis=False /p:RestorePackagesConfig=true /p:Platform="Any CPU"
-
-      - name: Move color_smash.exe to publish directory
+      - name: Publish for Raspberry Pi
         run: |
-            $colorSmashPath = "${{ github.workspace }}\ColorSmash\target\i686-pc-windows-msvc\release\color_smash.exe"
-            $publishPath = "${{ github.workspace }}\publish"
+          PUBLISH_DIR="${{ github.workspace }}/publish-${{ matrix.arch-name }}"
+          mkdir -p $PUBLISH_DIR
+          dotnet publish BrawlInstaller/BrawlInstaller.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            -o $PUBLISH_DIR \
+            /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true
 
-            if (Test-Path $colorSmashPath) {
-              if (-not (Test-Path $publishPath)) {
-                New-Item -Path $publishPath -ItemType Directory
-              }
-              Move-Item -Path $colorSmashPath -Destination $publishPath
-            } 
-            else {
-              Write-Host "color_smash.exe not found, skipping move."
-            }
+      - name: List Publish Directory
+        run: ls -lah ${{ github.workspace }}/publish-${{ matrix.arch-name }}
 
-      - name: Publish .NET Framework Project
-        run: msbuild BrawlInstaller/BrawlInstaller.csproj /t:Publish /p:Configuration=Release /p:DeployOnBuild=true /p:OutputPath="${{ github.workspace }}/publish"
+  release:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Create Velopack Release
+      - name: Install Velopack
         run: |
           dotnet tool install -g vpk
-          vpk download github --repoUrl https://github.com/squidgy617/BrawlInstaller
-          vpk pack --packId BrawlInstaller --packVersion ${{ steps.get-version.outputs.version }} --releaseNotes BrawlInstaller/Resources/changelog.md --packDir "${{ github.workspace }}/publish" --mainExe BrawlInstaller.exe --packTitle BrawlInstaller --icon .\BrawlInstaller\BrawlInstallerIcon.ico
-          vpk upload github --repoUrl https://github.com/squidgy617/BrawlInstaller --publish --releaseName "BrawlInstaller ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }} --token ${{ secrets.GITHUB_TOKEN }}
+          export PATH="$PATH:$HOME/.dotnet/tools"
+
+      - name: Pack and Upload 32-bit
+        if: ${{ matrix.arch-name == 'arm32' }}
+        run: |
+          vpk download github --repoUrl https://github.com/pompom454/BrawlInstaller-pi
+          vpk pack --packId BrawlInstaller --packVersion ${{ steps.get-version.outputs.version }} --releaseNotes BrawlInstaller/Resources/changelog.md --packDir "${{ github.workspace }}/publish-arm32" --mainExe BrawlInstaller --packTitle "BrawlInstaller (ARM32)" --icon BrawlInstaller/BrawlInstallerIcon.ico
+          vpk upload github --repoUrl https://github.com/pompom454/BrawlInstaller-pi --publish --releaseName "BrawlInstaller ${{ steps.get-version.outputs.version }} (ARM32)" --tag "v${{ steps.get-version.outputs.version }}-arm32" --token ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pack and Upload 64-bit
+        if: ${{ matrix.arch-name == 'arm64' }}
+        run: |
+          vpk download github --repoUrl https://github.com/pompom454/BrawlInstaller-pi
+          vpk pack --packId BrawlInstaller --packVersion ${{ steps.get-version.outputs.version }} --releaseNotes BrawlInstaller/Resources/changelog.md --packDir "${{ github.workspace }}/publish-arm64" --mainExe BrawlInstaller --packTitle "BrawlInstaller (ARM64)" --icon BrawlInstaller/BrawlInstallerIcon.ico
+          vpk upload github --repoUrl https://github.com/pompom454/BrawlInstaller-pi --publish --releaseName "BrawlInstaller ${{ steps.get-version.outputs.version }} (ARM64)" --tag "v${{ steps.get-version.outputs.version }}-arm64" --token ${{ secrets.GITHUB_TOKEN }}
