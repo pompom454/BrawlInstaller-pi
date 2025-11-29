@@ -1,6 +1,8 @@
 <h1><img src="https://github.com/user-attachments/assets/7136948e-4a1c-4ad7-bf5f-b1cdc793a694" alt="BrawlInstaller Logo" width="32" height="32"/> BrawlInstaller</h1>
 An all-in-one tool for managing mods in Brawl. Manage fighters, costumes, stages, music, and trophies with flexible tools that can support virtually any build.
 
+### Originally by [squidgy617](https://github.com/squidgy617) Thanks for this tool, it's a miracle!
+
 # Features
 - Add, edit, or delete all of the following in virtually any build:
     - Fighters
@@ -14,18 +16,17 @@ An all-in-one tool for managing mods in Brawl. Manage fighters, costumes, stages
 - Automatic backups created whenever BrawlInstaller makes a change, which can be restored when unexpected results occur.
 
 # Installation
-- Download `BrawlInstaller-win-Portable.zip` in the [latest release](https://github.com/squidgy617/BrawlInstaller/releases/latest) and extract it to a destination of your choosing.
-- Run `BrawlInstaller.exe`.
+- Download `BrawlInstaller-(your platform)-Portable.zip` in the [latest release](https://github.com/pompom454/BrawlInstaller-pi/releases/latest) and extract it to a destination of your choosing.
+- Run `BrawlInstaller`.
 - Set your build path to the root of your build.
 - On the settings tab, set your settings to one of the presets, make any modifications necessary, and hit "Save".
 
-Once you've completed these steps, you're ready to start using BrawlInstaller. For more information, please view the [wiki](https://github.com/squidgy617/BrawlInstaller/wiki).
+Once you've completed these steps, you're ready to start using BrawlInstaller. For more information, please view the [wiki](https://github.com/pompom454/BrawlInstaller-pi/wiki).
 
 # Reporting Issues
-If you encounter an error or unexpected behavior with the program, please open an issue on the [issues page](https://github.com/squidgy617/BrawlInstaller/issues) or report the issue on the [BrawlInstaller Discord server](https://discord.gg/NMkTZWt9bK). If you encountered an error, an `Error.txt` file should be generated in your BrawlInstaller directory, so please provide that in the issue report. Please also provide as much detail as possible on how to recreate the issue.
+If you encounter an error or unexpected behavior with the program, please open an issue on the [issues page](https://github.com/pompom454/BrawlInstaller-pi/issues). If you encountered an error, an `Error.txt` file should be generated in your BrawlInstaller directory, so please provide that in the issue report. Please also provide as much detail as possible on how to recreate the issue.
 
 # Resources
-- **[BrawlInstaller Discord Server](https://discord.gg/NMkTZWt9bK)** - Public Discord where you can discuss BrawlInstaller and get support.
 - **[Custom Brawl Modding Discord Server](https://discord.gg/GbxJhbv)** - Main hub for discussing Brawl modding.
 
 # Credits
@@ -66,7 +67,7 @@ If you encounter an error or unexpected behavior with the program, please open a
     - [MIT License](https://github.com/velopack/velopack/blob/develop/LICENSE)
  
 # Testers
-The following people were part of the BrawlInstaller testing team to provide feedback and bug reports during development.
+The following people were part of the original BrawlInstaller testing team to provide feedback and bug reports during development.
 - Burrotis Man/SoN1c2001
 - Cahalan
 - GoldenNickXT

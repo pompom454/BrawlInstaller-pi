@@ -12,14 +12,14 @@
         {
             DefaultName = name;
             Filename = filename;
-            ID = (ushort) id;
+            ID = (ushort)id;
             DefaultVolume = volume;
             InfoPacIndex = infoPacIndex;
         }
 
         public override string ToString()
         {
-            return $"{ID.ToString("X4")} {Filename} {DefaultName}";
+            return $"{ID:X4} {Filename} {DefaultName}";
         }
     }
 }

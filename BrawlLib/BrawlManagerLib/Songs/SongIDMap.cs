@@ -12,7 +12,7 @@ namespace BrawlLib.BrawlManagerLib.Songs
         static SongIDMap()
         {
             allSongs = new Song[ushort.MaxValue + 1];
-            for (int i = 0; i == (ushort) i; i++)
+            for (int i = 0; i <= ushort.MaxValue; i++)
             {
                 allSongs[i] = existing.FirstOrDefault(s => s.ID == i) ?? customSoundEngineSong(i);
             }
@@ -23,7 +23,7 @@ namespace BrawlLib.BrawlManagerLib.Songs
             return new Song(
                 "Custom Sound Engine: " + id.ToString("X4"),
                 id.ToString("X8"),
-                (ushort) id,
+                (ushort)id,
                 null,
                 null
             );
