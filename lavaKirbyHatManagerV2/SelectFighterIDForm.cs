@@ -1,81 +1,121 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace lKHM
 {
-	public partial class SelectFighterIDForm : Form
-	{
-		KirbyHatManager sourceManager = null;
+    public partial class SelectFighterIDForm : Window
+    {
+        private KirbyHatManager sourceManager = null;
 
-		bool hatSlotIsPopulated(uint FID)
-		{
-			return sourceManager.fighterIDToInfoPacks.ContainsKey(FID);
-		}
-		void updateSlotNameText()
-		{
-			uint selectedHatID = (uint)numericUpDownFID.Value;
-			if (hatSlotIsPopulated(selectedHatID))
-			{
-				textBoxSlotName.Text = HatNames.getNameFromFID(selectedHatID);
-			}
-			else
-			{
-				textBoxSlotName.Text = "EMPTY_SLOT";
-			}
-		}
+        private bool hatSlotIsPopulated(uint FID)
+        {
+            return sourceManager.fighterIDToInfoPacks.ContainsKey(FID);
+        }
 
-		public SelectFighterIDForm(string contextStringIn, KirbyHatManager managerIn)
-		{
-			InitializeComponent();
+        private void updateSlotNameText()
+        {
+            uint selectedHatID = (uint)numericUpDownFID.Value;
+            if (hatSlotIsPopulated(selectedHatID))
+            {
+                textBoxSlotName.Text = HatNames.getNameFromFID(selectedHatID);
+            }
+            else
+            {
+                textBoxSlotName.Text = "EMPTY_SLOT";
+            }
+        }
 
-			labelContext.Text = contextStringIn;
-			TextBox numTextBox = numericUpDownFID.Controls[1] as TextBox;
-			numTextBox.CharacterCasing = CharacterCasing.Upper;
-			numTextBox.MaxLength = 2;
-			sourceManager = managerIn;
+        public SelectFighterIDForm(string contextStringIn, KirbyHatManager managerIn)
+        {
+            sourceManager = managerIn;
+            labelContext.Text = contextStringIn;
 
-			updateSlotNameText();
-		}
+            var numTextBox = numericUpDownFID.FindControl<TextBox>("PART_TextBox");
+            if (numTextBox != null)
+            {
+                numTextBox.CharacterCasing = CharacterCasing.Upper;
+                numTextBox.MaxLength = 2;
+            }
 
-		private void buttonOkay_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.OK;
+            updateSlotNameText();
+        }
 
-			if (hatSlotIsPopulated((uint)numericUpDownFID.Value))
-			{
-				DialogResult = MessageBox.Show("Destination Hat Slot is already configured! Overwrite the associated configuration?",
-					"Confirm Overwrite", MessageBoxButtons.OKCancel);
-			}
+        private void buttonOkay_Click(object? sender, RoutedEventArgs e)
+        {
+            if (hatSlotIsPopulated((uint)numericUpDownFID.Value))
+            {
+                var dialog = new Window
+                {
+                    Width = 400,
+                    Height = 150,
+                    Title = "Confirm Overwrite",
+                    Content = new StackPanel
+                    {
+                        Children =
+                        {
+                            new TextBlock
+                            {
+                                Text = "Destination Hat Slot is already configured! Overwrite the associated configuration?",
+                                Margin = new Avalonia.Thickness(10)
+                            },
+                            new StackPanel
+                            {
+                                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                                Children =
+                                {
+                                    new Button
+                                    {
+                                        Content = "OK",
+                                        Margin = new Avalonia.Thickness(10),
+                                        Command = ReactiveCommand.Create(() => dialog.Close(true))
+                                    },
+                                    new Button
+                                    {
+                                        Content = "Cancel",
+                                        Margin = new Avalonia.Thickness(10),
+                                        Command = ReactiveCommand.Create(() => dialog.Close(false))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+                dialog.ShowDialog(this);
+            }
 
-			Close();
-		}
+            Close();
+        }
 
-		private void buttonCancel_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
+        private void buttonCancel_Click(object? sender, RoutedEventArgs e)
+        {
+            Close();
+        }
 
-		private void numericUpDownFID_KeyDown(object sender, KeyEventArgs e)
-		{
-			string allowedChars = "0123456789ABCDEF";
-			Keys[] allowedKeys = { Keys.Back, Keys.Delete, Keys.Shift, Keys.Left, Keys.Right, Keys.Up, Keys.Down };
-			if (!allowedChars.Contains((char)e.KeyCode) && !allowedKeys.Contains(e.KeyCode))
-			{
-				e.SuppressKeyPress = true;
-			}
-		}
+        private void numericUpDownFID_KeyDown(object? sender, KeyEventArgs e)
+        {
+            string allowedChars = "0123456789ABCDEF";
+            var keyChar = e.Key.ToString().ToUpper();
 
-		private void numericUpDownFID_ValueChanged(object sender, EventArgs e)
-		{
-			updateSlotNameText();
-		}
-	}
+            if (!allowedChars.Contains(keyChar) &&
+                e.Key != Key.Back &&
+                e.Key != Key.Delete &&
+                e.Key != Key.Left &&
+                e.Key != Key.Right &&
+                e.Key != Key.Up &&
+                e.Key != Key.Down &&
+                e.Key != Key.Shift)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void numericUpDownFID_ValueChanged(object? sender, NumericUpDownValueChangedEventArgs e)
+        {
+            updateSlotNameText();
+        }
+    }
 }
