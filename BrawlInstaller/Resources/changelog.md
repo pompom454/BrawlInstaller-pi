@@ -1,1 +1,1 @@
-﻿- Fixed an issue where an error occuring during character installation or uninstallation would still update the "All Fighters" list.
+﻿- Fixed an issue where running the program in certain regions would cause float values to be incorrect for custom physics modifiers.
