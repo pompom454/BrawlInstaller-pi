@@ -38,7 +38,7 @@ namespace BrawlInstaller.Services
         void SaveTrophyList(List<Trophy> trophyList);
 
         /// <inheritdoc cref="TrophyService.GetUnusedTrophyIds(BrawlIds)"/>
-        BrawlIds GetUnusedTrophyIds(BrawlIds ids);
+        BrawlIds GetUnusedTrophyIds(BrawlIds ids, List<Trophy> usedTrophies = null);
     }
 
     [Export(typeof(ITrophyService))]
@@ -462,32 +462,44 @@ namespace BrawlInstaller.Services
         /// </summary>
         /// <param name="ids">BrawlIds to update</param>
         /// <returns>Updated IDs</returns>
-        public BrawlIds GetUnusedTrophyIds(BrawlIds ids)
+        public BrawlIds GetUnusedTrophyIds(BrawlIds ids, List<Trophy> usedTrophies = null)
         {
             if (ids != null)
             {
+                var trophyId = ids.TrophyId;
                 List<Trophy> trophyList = null;
                 // Get IDs if they aren't there
-                if (ids.TrophyId == null)
+                if (trophyId == null)
                 {
                     trophyList = GetTrophyList();
-                    ids.TrophyId = 631; // 631 is first custom trophy ID
-                    while (trophyList.Any(x => x.Ids.TrophyId == ids.TrophyId))
+                    if (usedTrophies != null)
                     {
-                        ids.TrophyId++;
+                        trophyList.AddRange(usedTrophies);
                     }
+                    trophyId = 631; // 631 is first custom trophy ID
+                    while (trophyList.Any(x => x.Ids.TrophyId == trophyId))
+                    {
+                        trophyId++;
+                    }
+                    ids.TrophyId = trophyId;
                 }
                 if (ids.TrophyThumbnailId == null)
                 {
                     if (trophyList == null)
                     {
                         trophyList = GetTrophyList();
+                        if (usedTrophies != null)
+                        {
+                            trophyList.AddRange(usedTrophies);
+                        }
                     }
-                    ids.TrophyThumbnailId = 631; // 631 is first custom trophy ID
-                    while (trophyList.Any(x => x.Ids.TrophyThumbnailId == ids.TrophyThumbnailId))
+                    var thumbnailId = ids.TrophyThumbnailId;
+                    thumbnailId = 631; // 631 is first custom trophy ID
+                    while (trophyList.Any(x => x.Ids.TrophyThumbnailId == thumbnailId))
                     {
-                        ids.TrophyThumbnailId++;
+                        thumbnailId++;
                     }
+                    ids.TrophyThumbnailId = thumbnailId;
                 }
             }
             return ids;

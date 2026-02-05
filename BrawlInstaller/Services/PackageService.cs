@@ -209,6 +209,11 @@ namespace BrawlInstaller.Services
             }
             // Update trophies
             _fighterService.SaveFighterTrophies(fighterPackage, oldFighter);
+            // Set old trophies to current ones
+            foreach(var trophy in fighterPackage.Trophies)
+            {
+                trophy.OldTrophy = trophy.Trophy;
+            }
             // Clean up inheritance
             fighterPackage = CleanupCosmeticInheritance(fighterPackage);
             // Set package type to update, in case it was a new package
@@ -394,7 +399,7 @@ namespace BrawlInstaller.Services
                             // Get cosmetics
                             trophy.Trophy.Thumbnails = _cosmeticService.LoadCosmetics($"{trophyPath}\\Thumbnails");
                             // Check if trophy is new or existing
-                            trophy = GetNewOrExistingTrophy(trophy);
+                            trophy = GetNewOrExistingTrophy(trophy, fighterPackage.Trophies);
                             fighterPackage.Trophies.Add(trophy);
                         }
                     }
@@ -884,7 +889,7 @@ namespace BrawlInstaller.Services
                     // Check if trophy is new or existing
                     foreach(var fighterTrophy in fighterPackage.Trophies)
                     {
-                        GetNewOrExistingTrophy(fighterTrophy);
+                        GetNewOrExistingTrophy(fighterTrophy, fighterPackage.Trophies);
                     }
                 }
                     
@@ -898,8 +903,9 @@ namespace BrawlInstaller.Services
         /// Check if trophy is a custom trophy or not, and update it accordingly
         /// </summary>
         /// <param name="fighterTrophy">Fighter trophy to check</param>
+        /// <param name="usedTrophies">Fighter trophies that are already used</param>
         /// <returns>Updated fighter trophy</returns>
-        private FighterTrophy GetNewOrExistingTrophy(FighterTrophy fighterTrophy)
+        private FighterTrophy GetNewOrExistingTrophy(FighterTrophy fighterTrophy, List<FighterTrophy> usedTrophies)
         {
             var trophy = fighterTrophy;
             // Set custom trophy IDs to get a new ID
@@ -911,7 +917,7 @@ namespace BrawlInstaller.Services
             {
                 trophy.Trophy.Ids.TrophyThumbnailId = null;
             }
-            _trophyService.GetUnusedTrophyIds(trophy.Trophy.Ids);
+            _trophyService.GetUnusedTrophyIds(trophy.Trophy.Ids, usedTrophies.Select(x => x.Trophy).ToList());
             // If NOT a custom trophy ID, set old trophy to matching trophy in build
             if (trophy.Trophy.Ids.TrophyId < 631 && trophy.Trophy.Ids.TrophyThumbnailId < 631)
             {

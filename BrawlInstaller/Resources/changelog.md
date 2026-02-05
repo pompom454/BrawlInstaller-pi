@@ -1,1 +1,1 @@
-﻿- Fixed an issue where running the program in certain regions would cause float values to be incorrect for custom physics modifiers.
+﻿- Updated REX preset to correct victory theme IDs for vanilla fighters.

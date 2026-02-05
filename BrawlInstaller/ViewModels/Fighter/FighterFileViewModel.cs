@@ -101,22 +101,26 @@ namespace BrawlInstaller.ViewModels
         public bool SoundbankControlsEnabled { get => FighterPackage?.FighterInfo?.FighterAttributes != null; }
 
         [DependsUpon(nameof(FighterPackage))]
-        public uint? OldSoundbankId { get => FighterPackage?.FighterInfo?.OriginalSoundbankId; set { FighterPackage.FighterInfo.OriginalSoundbankId = value; } }
+        public uint? OldSoundbankId { get => FighterPackage?.FighterInfo?.OriginalSoundbankId; set { FighterPackage.FighterInfo.OriginalSoundbankId = value; FighterPackage.FighterInfo.SoundbankId = value; OnPropertyChanged(nameof(OldSoundbankId)); } }
 
         [DependsUpon(nameof(FighterPackage))]
+        [DependsUpon(nameof(OldSoundbankId))]
         public uint? SoundbankId { get => FighterPackage?.FighterInfo?.SoundbankId; set { ChangedSoundbankId(FighterPackage.FighterInfo.OriginalSoundbankId, value); OnPropertyChanged(nameof(SoundbankId)); } }
 
         [DependsUpon(nameof(SoundbankId))]
-        public bool SoundbankIdControlEnabled { get => FighterPackage?.FighterInfo?.OriginalSoundbankId == null || SoundbankId == null || SoundbankId >= 324; }
+        [DependsUpon(nameof(OldSoundbankId))]
+        public bool SoundbankIdControlEnabled { get => OldSoundbankId == null || SoundbankId == null || OldSoundbankId >= 324; }
 
         [DependsUpon(nameof(FighterPackage))]
-        public uint? OldKirbySoundbankId { get => FighterPackage?.FighterInfo?.OriginalKirbySoundbankId; set { FighterPackage.FighterInfo.OriginalKirbySoundbankId = value; } }
+        public uint? OldKirbySoundbankId { get => FighterPackage?.FighterInfo?.OriginalKirbySoundbankId; set { FighterPackage.FighterInfo.OriginalKirbySoundbankId = value; FighterPackage.FighterInfo.KirbySoundbankId = value; OnPropertyChanged(nameof(OldKirbySoundbankId)); } }
 
         [DependsUpon(nameof(FighterPackage))]
+        [DependsUpon(nameof(OldKirbySoundbankId))]
         public uint? KirbySoundbankId { get => FighterPackage?.FighterInfo?.KirbySoundbankId; set { ChangedKirbySoundbankId(FighterPackage.FighterInfo.OriginalKirbySoundbankId, value); OnPropertyChanged(nameof(KirbySoundbankId)); } }
 
         [DependsUpon(nameof(KirbySoundbankId))]
-        public bool KirbySoundbankIdControlEnabled { get => FighterPackage?.FighterInfo?.OriginalKirbySoundbankId == null || KirbySoundbankId == null || KirbySoundbankId >= 324; }
+        [DependsUpon(nameof(OldKirbySoundbankId))]
+        public bool KirbySoundbankIdControlEnabled { get => OldKirbySoundbankId == null || KirbySoundbankId == null || OldKirbySoundbankId >= 324; }
 
         [DependsUpon(nameof(FighterPackage))]
         public uint? VictoryThemeId { get => FighterPackage?.VictoryTheme?.SongId; set { ChangedThemeId(FighterPackage?.VictoryTheme, value); OnPropertyChanged(nameof(VictoryThemeId)); } }
@@ -125,10 +129,16 @@ namespace BrawlInstaller.ViewModels
         public bool VictoryThemeIdEnabled { get => !_settingsService.BuildSettings.MiscSettings.VictoryThemesUseFighterIds && FighterPackage?.FighterInfo?.SlotAttributes != null; }
 
         [DependsUpon(nameof(FighterPackage))]
+        public bool ReplaceVictoryThemeEnabled { get => !_settingsService.BuildSettings.MiscSettings.VictoryThemesUseFighterIds; }
+
+        [DependsUpon(nameof(FighterPackage))]
         public uint? CreditsThemeId { get => FighterPackage?.CreditsTheme?.SongId; set { ChangedThemeId(FighterPackage?.CreditsTheme, value); OnPropertyChanged(nameof(CreditsThemeId)); } }
 
         [DependsUpon(nameof(FighterPackage))]
         public bool CreditsThemeIdEnabled { get => !_settingsService.BuildSettings.MiscSettings.CreditsThemesUseFighterIds; }
+
+        [DependsUpon(nameof(FighterPackage))]
+        public bool ReplaceCreditsThemeEnabled { get => !_settingsService.BuildSettings.MiscSettings.CreditsThemesUseFighterIds; }
 
         [DependsUpon(nameof(FighterPackage))]
         public Dictionary<string, FighterFileType> FighterFileTypes { get => typeof(FighterFileType).GetDictionary<FighterFileType>().ToDictionary(x => FighterPackage != null ? FighterPacFile.GetPrefix(x.Value, FighterPackage?.FighterInfo) : x.Key, x => x.Value); }
@@ -205,9 +215,14 @@ namespace BrawlInstaller.ViewModels
 
         public void ChangedSoundbankId(uint? oldSoundbankId, uint? newSoundbankId)
         {
-            if (oldSoundbankId != null && newSoundbankId != null && newSoundbankId < 324)
+            if (oldSoundbankId != null && newSoundbankId != null && oldSoundbankId >= 324 && newSoundbankId < 324)
             {
-                _dialogService.ShowMessage("Cannot change to a non-custom soundbank. Custom soundbanks start at 0x144 (324).", "Non-Custom Soundbank ID", MessageBoxImage.Error);
+                _dialogService.ShowMessage("Cannot change from a custom soundbank to a non-custom soundbank. Custom soundbanks start at 0x144 (324).", "Non-Custom Soundbank ID", MessageBoxImage.Error);
+                FighterPackage.FighterInfo.SoundbankId = oldSoundbankId;
+            }
+            else if (oldSoundbankId != null && newSoundbankId != null && oldSoundbankId < 324 && newSoundbankId >= 324)
+            {
+                _dialogService.ShowMessage("Cannot change from a non-custom soundbank to a custom soundbank. Custom soundbanks start at 0x144 (324).", "Custom Soundbank ID", MessageBoxImage.Error);
                 FighterPackage.FighterInfo.SoundbankId = oldSoundbankId;
             }
             else
@@ -218,9 +233,14 @@ namespace BrawlInstaller.ViewModels
 
         public void ChangedKirbySoundbankId(uint? oldSoundbankId, uint? newSoundbankId)
         {
-            if (oldSoundbankId != null && newSoundbankId != null && newSoundbankId < 324)
+            if (oldSoundbankId != null && newSoundbankId != null && oldSoundbankId >= 324 && newSoundbankId < 324)
             {
                 _dialogService.ShowMessage("Cannot change to a non-custom soundbank. Custom soundbanks start at 0x144 (324).", "Non-Custom Soundbank ID", MessageBoxImage.Error);
+                FighterPackage.FighterInfo.KirbySoundbankId = oldSoundbankId;
+            }
+            else if (oldSoundbankId != null && newSoundbankId != null && oldSoundbankId < 324 && newSoundbankId >= 324)
+            {
+                _dialogService.ShowMessage("Cannot change from a non-custom soundbank to a custom soundbank. Custom soundbanks start at 0x144 (324).", "Custom Soundbank ID", MessageBoxImage.Error);
                 FighterPackage.FighterInfo.KirbySoundbankId = oldSoundbankId;
             }
             else
@@ -269,6 +289,12 @@ namespace BrawlInstaller.ViewModels
             var result = SelectTracklistSong(_settingsService.BuildSettings.FilePathSettings.VictoryThemeTracklist, "Select a victory theme");
             if (result != null)
             {
+                if (!_settingsService.BuildSettings.MiscSettings.VictoryThemesUseFighterIds)
+                {
+                    FighterPackage.VictoryTheme.Name = result.Name;
+                    FighterPackage.VictoryTheme.SongId = result.SongId;
+                    FighterPackage.VictoryTheme.ReplaceExisting = true;
+                }
                 FighterPackage.VictoryTheme.SongFile = result.SongFile;
                 FighterPackage.VictoryTheme.SongPath = result.SongPath;
                 OnPropertyChanged(nameof(FighterPackage));
@@ -280,6 +306,12 @@ namespace BrawlInstaller.ViewModels
             var result = SelectTracklistSong(_settingsService.BuildSettings.FilePathSettings.CreditsThemeTracklist, "Select a credits theme");
             if (result != null)
             {
+                if (!_settingsService.BuildSettings.MiscSettings.CreditsThemesUseFighterIds)
+                {
+                    FighterPackage.CreditsTheme.Name = result.Name;
+                    FighterPackage.CreditsTheme.SongId = result.SongId;
+                    FighterPackage.CreditsTheme.ReplaceExisting = true;
+                }
                 FighterPackage.CreditsTheme.SongFile = result.SongFile;
                 FighterPackage.CreditsTheme.SongPath = result.SongPath;
                 OnPropertyChanged(nameof(FighterPackage));
