@@ -16,12 +16,12 @@ An all-in-one tool for managing mods in Brawl. Manage fighters, costumes, stages
 - Automatic backups created whenever BrawlInstaller makes a change, which can be restored when unexpected results occur.
 
 # Installation
-- Download `BrawlInstaller-(your platform)-Portable.zip` in the [latest release](https://github.com/pompom454/BrawlInstaller-pi/releases/latest) and extract it to a destination of your choosing.
+- Download `BrawlInstaller-Linux(architecture)-Portable.zip` in the [latest release](https://github.com/pompom454/BrawlInstaller-pi/releases/latest) and extract it to a destination of your choosing.
 - Run `BrawlInstaller`.
 - Set your build path to the root of your build.
 - On the settings tab, set your settings to one of the presets, make any modifications necessary, and hit "Save".
 
-Once you've completed these steps, you're ready to start using BrawlInstaller. For more information, please view the [wiki](https://github.com/pompom454/BrawlInstaller-pi/wiki).
+Once you've completed these steps, you're ready to start using BrawlInstaller. For more information, please view the [wiki](https://github.com/squidgy617/BrawlInstaller/wiki).
 
 # Reporting Issues
 If you encounter an error or unexpected behavior with the program, please open an issue on the [issues page](https://github.com/pompom454/BrawlInstaller-pi/issues). If you encountered an error, an `Error.txt` file should be generated in your BrawlInstaller directory, so please provide that in the issue report. Please also provide as much detail as possible on how to recreate the issue.
