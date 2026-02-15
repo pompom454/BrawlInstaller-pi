@@ -1,21 +1,30 @@
-﻿using BrawlInstaller.StaticClasses;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
+using BrawlInstaller.StaticClasses;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace BrawlInstaller
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        private void Application_Exit(object sender, ExitEventArgs e)
+        public override void Initialize()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+
+        public override void OnFrameworkInitializationCompleted()
+        {
+            // hookie :D
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.Exit += OnExit;
+            }
+
+            base.OnFrameworkInitializationCompleted();
+        }
+
+        private void OnExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
         {
             if (Directory.Exists(Paths.TempPath))
             {
