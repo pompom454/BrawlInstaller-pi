@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.ReactiveUI;
 using Velopack;
+using System;
 
 namespace BrawlInstaller
 {
     public class Program
     {
         [STAThread]
-        static void Main()
+        public static void Main(string[] args)
         {
+            // more hookies! supa fun i do say so myself
             VelopackApp.Build().Run();
-            App application = new App();
-            application.InitializeComponent();
-            application.Run();
+
+            BuildAvaloniaApp()
+                .StartWithClassicDesktopLifetime(args);
         }
+
+        public static AppBuilder BuildAvaloniaApp()
+            => AppBuilder.Configure<App>()
+                .UsePlatformDetect()
+                .UseReactiveUI();
     }
 }
