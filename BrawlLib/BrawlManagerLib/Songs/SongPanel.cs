@@ -1,12 +1,15 @@
-﻿using BrawlLib.Internal.Audio;
-using BrawlLib.Internal.Windows.Forms;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Threading;
+using BrawlLib.Internal.Audio;
 using BrawlLib.SSBB.ResourceNodes;
+using PropertyGrid;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace BrawlLib.BrawlManagerLib.Songs
 {
@@ -22,49 +25,34 @@ namespace BrawlLib.BrawlManagerLib.Songs
         /// </summary>
         private string _rootPath;
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [DefaultValue(true)]
-        public bool LoadNames { get; set; }
+        public bool LoadNames { get; set; } = true;
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [DefaultValue(true)]
-        public bool LoadBrstms { get; set; }
+        public bool LoadBrstms { get; set; } = true;
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [DefaultValue(true)]
         public bool ShowPropertyGrid
         {
-            get => grid.Visible;
-            set => grid.Visible = value;
+            get => propertyGrid.IsVisible;
+            set => propertyGrid.IsVisible = value;
         }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [DefaultValue(false)]
         public bool ShowFilename
         {
-            get => lblFilename.Visible;
-            set => lblFilename.Visible = value;
+            get => lblFilename.IsVisible;
+            set => lblFilename.IsVisible = value;
         }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [DefaultValue(false)]
         public bool ShowVolumeSpinner
         {
-            get => nudVolume.Visible;
-            set => nudVolume.Visible = value;
+            get => nudVolume.IsVisible;
+            set => nudVolume.IsVisible = value;
         }
 
-        /// <summary>
-        /// If the file last requested is open, its path is stored here. If a fallback file is open, this will be null.
-        /// </summary>
         public string RootPath => _rootPath;
 
-        /// <summary>
-        /// Whether you can export or delete a file.
-        /// </summary>
         public bool FileOpen => _rootPath != null;
 
         public bool InfoLoaded => songNameBar.InfoLoaded;
+
         public string LastFileCalledFor { get; private set; }
 
         public byte? VolumeByte
@@ -80,93 +68,114 @@ namespace BrawlLib.BrawlManagerLib.Songs
         {
             InitializeComponent();
 
-            LoadNames = true;
-            LoadBrstms = true;
-            ShowPropertyGrid = true;
-            ShowFilename = false;
-            ShowVolumeSpinner = false;
-
-            AllowDrop = true;
-            DragEnter += SongPanel_DragEnter;
-            DragDrop += SongPanel_DragDrop;
+            AddHandler(DragDrop.DropEvent, SongPanel_Drop);
+            AddHandler(DragDrop.DragOverEvent, SongPanel_DragOver);
         }
 
         public void Close()
         {
-            if (_rootNode != null)
-            {
-                _rootNode.Dispose();
-                _rootNode = null;
-            }
+            _rootNode?.Dispose();
+            _rootNode = null;
 
             _rootPath = null;
 
-            grid.SelectedObject = null;
+            propertyGrid.DataContext = null;
+
             app.TargetSource = null;
-            app.Enabled = grid.Enabled = false;
+
+            app.IsEnabled = false;
+
             lblFilename.Text = "";
+
             songNameBar.Index = -1;
         }
 
         public void Open(FileInfo fi, string fallbackDir = null)
         {
             LastFileCalledFor = fi.FullName;
-            lblFilename.Text = Path.GetFileNameWithoutExtension(LastFileCalledFor);
 
-            if (_rootNode != null)
-            {
-                _rootNode.Dispose();
-                _rootNode = null;
-            }
+            lblFilename.Text =
+                Path.GetFileNameWithoutExtension(LastFileCalledFor);
+
+            _rootNode?.Dispose();
+
+            _rootNode = null;
 
             if (fi.Exists)
             {
                 _rootPath = fi.FullName;
-                _rootNode = NodeFactory.FromFile(null, _rootPath);
+
+                _rootNode =
+                    NodeFactory.FromFile(null, _rootPath);
             }
             else if (fallbackDir != null)
             {
-                FileInfo fallback = new FileInfo(fallbackDir + Path.DirectorySeparatorChar + fi.Name);
+                FileInfo fallback =
+                    new FileInfo(
+                        Path.Combine(fallbackDir, fi.Name));
+
                 if (fallback.Exists)
                 {
                     _rootPath = null;
-                    _rootNode = NodeFactory.FromFile(null, fallback.FullName);
+
+                    _rootNode =
+                        NodeFactory.FromFile(null,
+                        fallback.FullName);
                 }
             }
 
-            string filename = Path.GetFileNameWithoutExtension(LastFileCalledFor).ToUpper();
-            Song song = (from s in SongIDMap.Songs
-                         where s.Filename == filename
-                         select s)
-                .DefaultIfEmpty(null).First();
-            if (song != null && CustomSongTitles != null && CustomSongTitles.TryGetValue(song.ID, out string name))
+            string filename =
+                Path.GetFileNameWithoutExtension(
+                    LastFileCalledFor).ToUpper();
+
+            Song song =
+                SongIDMap.Songs
+                .FirstOrDefault(s =>
+                s.Filename == filename);
+
+            if (song != null &&
+                CustomSongTitles != null &&
+                CustomSongTitles.TryGetValue(
+                    song.ID,
+                    out string name))
             {
                 songNameBar.Index = -1;
+
                 songNameBar.NegativeIndexText = name;
             }
             else if (LoadNames)
             {
-                int index = song == null
+                songNameBar.Index =
+                    song == null
                     ? -1
                     : songNameBar.GetInfoPacIndex(song.ID);
-                songNameBar.Index = index;
             }
             else
             {
                 songNameBar.Index = -1;
             }
 
-            if (LoadBrstms && _rootNode is IAudioSource node)
+            if (LoadBrstms &&
+                _rootNode is IAudioSource node)
             {
-                grid.SelectedObject = _rootNode;
-                app.TargetSource = node;
-                app.Enabled = grid.Enabled = true;
+                propertyGrid.DataContext =
+                    _rootNode;
+
+                app.TargetSource =
+                    node;
+
+                app.IsEnabled = true;
             }
             else
             {
-                grid.SelectedObject = null;
-                app.TargetSource = null;
-                app.Enabled = grid.Enabled = false;
+                propertyGrid.DataContext =
+                    null;
+
+                app.TargetSource =
+                    null;
+
+                app.IsEnabled =
+                    false;
             }
         }
 
@@ -175,39 +184,72 @@ namespace BrawlLib.BrawlManagerLib.Songs
             app.Play();
         }
 
-        public void Export()
+        public async Task Export()
         {
-            using (SaveFileDialog dialog = new SaveFileDialog())
-            {
-                dialog.Filter = "BRSTM stream|*.brstm";
-                dialog.DefaultExt = "brstm";
-                dialog.AddExtension = true;
-                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-                if (dialog.ShowDialog(this) == DialogResult.OK)
+            var dialog =
+                new SaveFileDialog
                 {
-                    File.Copy(RootPath, dialog.FileName, true);
-                }
+                    Filters =
+                    {
+                        new FileDialogFilter
+                        {
+                            Name = "BRSTM stream",
+                            Extensions =
+                            {
+                                "brstm"
+                            }
+                        }
+                    }
+                };
+
+            string path =
+                await dialog.ShowAsync(
+                    GetWindow());
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                File.Copy(
+                    RootPath,
+                    path,
+                    true);
             }
         }
 
-        public void Rename()
+        public async Task Rename()
         {
-            using (NameDialog nd = new NameDialog())
-            {
-                nd.EntryText = Path.GetFileName(RootPath);
-                if (nd.ShowDialog(this) == DialogResult.OK)
+            var dialog =
+                new SaveFileDialog
                 {
-                    if (!nd.EntryText.ToLower().EndsWith(".brstm"))
-                    {
-                        nd.EntryText += ".brstm"; // Force .brstm extension so it shows up in the list
-                    }
+                    InitialFileName =
+                        Path.GetFileName(RootPath),
 
-                    string from = RootPath;
-                    Close();
-                    FileOperations.Rename(from, Environment.CurrentDirectory + "\\" + nd.EntryText);
-                }
-            }
+                    Filters =
+                    {
+                        new FileDialogFilter
+                        {
+                            Name = "BRSTM",
+                            Extensions =
+                            {
+                                "brstm"
+                            }
+                        }
+                    }
+                };
+
+            string newPath =
+                await dialog.ShowAsync(
+                    GetWindow());
+
+            if (string.IsNullOrEmpty(newPath))
+                return;
+
+            string from = RootPath;
+
+            Close();
+
+            File.Move(
+                from,
+                newPath);
         }
 
         public void Delete()
@@ -215,35 +257,38 @@ namespace BrawlLib.BrawlManagerLib.Songs
             if (_rootNode != null)
             {
                 _rootNode.Dispose();
-                _rootNode = null;
-                FileOperations.Delete(_rootPath);
+
+                File.Delete(_rootPath);
+
                 Close();
             }
         }
 
         public void Replace(string filepath)
         {
-            if (FileOpen)
-            {
-                if (_rootNode != null)
-                {
-                    _rootNode.Dispose(); // Close the file before overwriting it!
-                    _rootNode = null;
-                }
-            }
+            _rootNode?.Dispose();
 
-            copyBrstm(filepath, LastFileCalledFor);
-            Open(new FileInfo(LastFileCalledFor));
+            copyBrstm(
+                filepath,
+                LastFileCalledFor);
+
+            Open(
+                new FileInfo(
+                LastFileCalledFor));
         }
 
         public string findInfoFile()
         {
-            return songNameBar.findInfoFile();
+            return
+                songNameBar
+                .findInfoFile();
         }
 
         public bool IsInfoBarDirty()
         {
-            return songNameBar.IsDirty;
+            return
+                songNameBar
+                .IsDirty;
         }
 
         public void save()
@@ -256,71 +301,97 @@ namespace BrawlLib.BrawlManagerLib.Songs
             songNameBar.ExportMSBin(path);
         }
 
-        private void SongPanel_DragEnter(object sender, DragEventArgs e)
+        private void SongPanel_DragOver(
+            object sender,
+            DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (e.Data.Contains(
+                DataFormats.Files))
             {
-                // Must be a file
-                string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop);
-                if (s.Length == 1)
-                {
-                    // Can only drag and drop one file
-                    string filename = s[0].ToLower();
-                    if (filename.EndsWith(".brstm") || filename.EndsWith(".wav"))
-                    {
-                        e.Effect = DragDropEffects.Copy;
-                    }
-                }
+                e.DragEffects =
+                    DragDropEffects.Copy;
             }
         }
 
-        private void SongPanel_DragDrop(object sender, DragEventArgs e)
+        private void SongPanel_Drop(
+            object sender,
+            DragEventArgs e)
         {
-            string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop);
-            BeginInvoke(new Action(() =>
+            var files =
+                e.Data.GetFiles();
+
+            if (files?.Count > 0)
             {
-                string filepath = s[0].ToLower();
-                Replace(filepath);
-            }));
+                Dispatcher.UIThread.Post(() =>
+                {
+                    Replace(
+                        files[0]
+                        .Path
+                        .LocalPath);
+                });
+            }
         }
 
-        /// <summary>
-        /// This method can handle WAV files, converting them to BRSTM using BrawlLib's converter.
-        /// </summary>
-        /// <param name="src">a BRSTM or WAV file</param>
-        /// <param name="dest">the output BRSTM path</param>
-        public static void copyBrstm(string src, string dest)
+        public static void copyBrstm(
+            string src,
+            string dest)
         {
             if (src.EndsWith(".brstm"))
             {
-                FileOperations.Copy(src, dest, true);
+                File.Copy(
+                    src,
+                    dest,
+                    true);
             }
             else
             {
-                BrstmConverterDialog bcd = new BrstmConverterDialog();
-                bcd.AudioSource = src;
-                if (bcd.ShowDialog() == DialogResult.OK)
-                {
-                    // Make a temporary node to put the data in, and export it.
-                    // This avoids the need to use pointers directly.
-                    RSTMNode tmpNode = new RSTMNode();
-                    tmpNode.ReplaceRaw(bcd.AudioData);
-                    tmpNode.Export(dest);
-                    tmpNode.Dispose();
-                }
+                var converter =
+                    new BrstmConverterDialog();
 
-                bcd.Dispose();
+                converter.AudioSource =
+                    src;
+
+                if (converter.ShowDialog()
+                    == true)
+                {
+                    var node =
+                        new RSTMNode();
+
+                    node.ReplaceRaw(
+                        converter.AudioData);
+
+                    node.Export(
+                        dest);
+
+                    node.Dispose();
+                }
             }
         }
 
-        private void nudVolume_ValueChanged(object sender, EventArgs e)
+        private void nudVolume_ValueChanged(
+            object sender,
+            EventArgs e)
         {
-            app.VolumePercent = nudVolume.Value <= 0 ? 1.0 : (double) nudVolume.Value / 127.0;
+            app.VolumePercent =
+                nudVolume.Value <= 0
+                ? 1.0
+                : nudVolume.Value / 127.0;
         }
 
-        private void app_AudioEnded(object sender, EventArgs e)
+        private void app_AudioEnded(
+            object sender,
+            EventArgs e)
         {
-            AudioEnded?.Invoke(this, e);
+            AudioEnded?.Invoke(
+                this,
+                e);
+        }
+
+        private Window GetWindow()
+        {
+            return
+                VisualRoot
+                as Window;
         }
     }
 }
