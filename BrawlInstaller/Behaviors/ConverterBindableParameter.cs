@@ -1,80 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
+// even tho avalonia DOES support this natively, i chose to port this anyway as i dont feel like changing codebase components without knowing the repercussions
+using Avalonia.Data;
+using Avalonia.Data.Converters;
+using Avalonia.Markup.Xaml;
+using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using System.Windows.Markup;
 
 namespace BrawlInstaller.Behaviors
 {
-    [ContentProperty(nameof(Binding))]
     public class ConverterBindableParameter : MarkupExtension
     {
-        #region Public Properties
+        public IBinding Binding { get; set; }
 
-        public Binding Binding { get; set; }
         public BindingMode Mode { get; set; }
+
         public IValueConverter Converter { get; set; }
-        public Binding ConverterParameter { get; set; }
 
-        #endregion
-
-        public ConverterBindableParameter()
-        { }
-
-        public ConverterBindableParameter(string path)
-        {
-            Binding = new Binding(path);
-        }
-
-        public ConverterBindableParameter(Binding binding)
-        {
-            Binding = binding;
-        }
-
-        #region Overridden Methods
+        public IBinding ConverterParameter { get; set; }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            var multiBinding = new MultiBinding();
-            Binding.Mode = Mode;
-            multiBinding.Bindings.Add(Binding);
-            if (ConverterParameter != null)
+            var multi = new MultiBinding
             {
-                ConverterParameter.Mode = BindingMode.OneWay;
-                multiBinding.Bindings.Add(ConverterParameter);
-            }
-            var adapter = new MultiValueConverterAdapter
+                Mode = Mode
+            };
+
+            multi.Bindings.Add(Binding);
+
+            if (ConverterParameter != null)
+                multi.Bindings.Add(ConverterParameter);
+
+            multi.Converter = new Adapter
             {
                 Converter = Converter
             };
-            multiBinding.Converter = adapter;
-            return multiBinding.ProvideValue(serviceProvider);
+
+            return multi;
         }
 
-        #endregion
-
-        [ContentProperty(nameof(Converter))]
-        private class MultiValueConverterAdapter : IMultiValueConverter
+        private class Adapter : IMultiValueConverter
         {
             public IValueConverter Converter { get; set; }
 
             private object lastParameter;
 
-            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            public object Convert(
+                IList<object> values,
+                Type targetType,
+                object parameter,
+                CultureInfo culture)
             {
-                if (Converter == null) return values[0]; // Required for VS design-time
-                if (values.Length > 1) lastParameter = values[1];
-                return Converter.Convert(values[0], targetType, lastParameter, culture);
+                if (Converter == null)
+                    return values[0];
+
+                if (values.Count > 1)
+                    lastParameter = values[1];
+
+                return Converter.Convert(
+                    values[0],
+                    targetType,
+                    lastParameter,
+                    culture);
             }
 
-            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            public object[] ConvertBack(
+                object value,
+                Type[] targetTypes,
+                object parameter,
+                CultureInfo culture)
             {
-                if (Converter == null) return new object[] { value }; // Required for VS design-time
-
-                return new object[] { Converter.ConvertBack(value, targetTypes[0], lastParameter, culture) };
+                return new[]
+                {
+                    Converter.ConvertBack(
+                        value,
+                        targetTypes[0],
+                        lastParameter,
+                        culture)
+                };
             }
         }
     }
