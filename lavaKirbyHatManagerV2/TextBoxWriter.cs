@@ -1,32 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Threading;
+using System.IO;
 using System.Text;
-
 
 namespace lKHM
 {
-    public class ControlWriter : System.IO.TextWriter
+    public class ControlWriter : TextWriter
     {
-        private System.Windows.Forms.Control textbox;
-        public ControlWriter(System.Windows.Forms.Control textbox)
+        private Control _control;
+
+        public ControlWriter(Control control)
         {
-            this.textbox = textbox;
+            _control = control;
         }
 
         public override void Write(char value)
         {
-            textbox.Text += value;
+            AppendText(value.ToString());
         }
 
         public override void Write(string value)
         {
-            textbox.Text += value;
+            AppendText(value);
         }
 
-        public override Encoding Encoding
+        private void AppendText(string text)
         {
-            get { return Encoding.ASCII; }
+            Dispatcher.UIThread.Post(() =>
+            {
+                switch (_control)
+                {
+                    case TextBox tb:
+                        tb.Text += text;
+                        break;
+
+                    case TextBlock tbl:
+                        tbl.Text += text;
+                        break;
+
+                    case SelectableTextBlock stb:
+                        stb.Text += text;
+                        break;
+                }
+            });
         }
+
+        public override Encoding Encoding => Encoding.ASCII;
     }
 }
