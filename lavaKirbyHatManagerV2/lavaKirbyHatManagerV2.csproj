@@ -12,44 +12,4 @@
     <ProjectReference Include="..\BrawlLib\BrawlLib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="HatNames.cs" />
-    <Compile Include="HatNode.cs" />
-    <Compile Include="HatXMLParser.cs" />
-    <Compile Include="KirbyHatManager.cs" />
-    <Compile Include="HatTXTParser.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs" />
-    <Compile Include="Properties\Settings.Designer.cs" />
-    <Compile Include="AboutForm.cs" />
-    <Compile Include="AboutForm.Designer.cs" />
-    <Compile Include="Form1.cs" />
-    <Compile Include="Form1.Designer.cs" />
-    <Compile Include="HatExportForm.cs" />
-    <Compile Include="HatExportForm.Designer.cs" />
-    <Compile Include="SelectFighterIDForm.cs" />
-    <Compile Include="SelectFighterIDForm.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="AboutForm.resx">
-      <DependentUpon>AboutForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HatExportForm.resx">
-      <DependentUpon>HatExportForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SelectFighterIDForm.resx">
-      <DependentUpon>SelectFighterIDForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
 </Project>
