@@ -1,12 +1,11 @@
-﻿<UserControl x:Class="BrawlInstaller.Views.CosmeticView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BrawlInstaller.Views"
-             xmlns:viewModels="clr-namespace:BrawlInstaller.ViewModels" d:DataContext="{d:DesignInstance Type=viewModels:CosmeticViewModel}"
-             mc:Ignorable="d" 
+             xmlns:viewModels="clr-namespace:BrawlInstaller.ViewModels"
+             x:Class="BrawlInstaller.Views.CosmeticView"
+             d:DataContext="{d:DesignInstance Type=viewModels:CosmeticViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -21,21 +20,25 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label x:Name="cosmeticTypeLabel" Content="Type:" Grid.Row="0" Grid.Column="0" ToolTip="Type of cosmetic to edit"/>
-        <ComboBox x:Name="cosmeticOptionsDropDown" Width="120" ItemsSource="{Binding CosmeticOptions}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCosmeticOption, Mode=TwoWay}" SelectedIndex="0" IsSynchronizedWithCurrentItem="True" Grid.Row="0" Grid.Column="1"/>
-        <Label x:Name="cosmeticStyleLabel" Content="Style:" Grid.Column="0" Grid.Row="1" ToolTip="Style of cosmetic to edit"/>
+
+        <Label Content="Type:" Grid.Row="0" Grid.Column="0" ToolTip.Tip="Type of cosmetic to edit"/>
+        <ComboBox Width="120" Items="{Binding CosmeticOptions}" SelectedValue="{Binding SelectedCosmeticOption}" Grid.Row="0" Grid.Column="1"/>
+
+        <Label Content="Style:" Grid.Row="1" Grid.Column="0" ToolTip.Tip="Style of cosmetic to edit"/>
         <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <ComboBox x:Name="stylesDropDown" Width="120" ItemsSource="{Binding Styles}" SelectedValue="{Binding SelectedStyle, Mode=TwoWay}" SelectedIndex="0" IsSynchronizedWithCurrentItem="True"/>
-            <Button x:Name="stylesAddButton" Style="{StaticResource miniButton}" Content="+" Command="{Binding AddStyleCommand}"/>
-            <Button x:Name="stylesRemoveButton" Style="{StaticResource miniButton}" Content="-" Command="{Binding RemoveStyleCommand}"/>
+            <ComboBox Width="120" Items="{Binding Styles}" SelectedValue="{Binding SelectedStyle}"/>
+            <Button Style="{StaticResource miniButton}" Content="+" Command="{Binding AddStyleCommand}"/>
+            <Button Style="{StaticResource miniButton}" Content="-" Command="{Binding RemoveStyleCommand}"/>
         </StackPanel>
-        <Label x:Name="cosmeticLabel" Content="Image:" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" ToolTip="Image to use for cosmetic"/>
-        <Image x:Name="cosmeticImage" Height="128" Width="128" Source="{Binding SelectedCosmetic.Image}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="3" Grid.Column="1"/>
-        <Button x:Name="browseCosmeticButton" Content="Browse..." Command="{Binding ReplaceCosmeticCommand}" Grid.Row="4" Grid.Column="1"/>
-        <Button x:Name="clearCosmeticButton" Content="Clear" Command="{Binding ClearCosmeticCommand}" Grid.Row="5" Grid.Column="1"/>
-        <Label x:Name="hdCosmeticLabel" Content="HD Image:" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="2" ToolTip="HD image to use for cosmetic"/>
-        <Image x:Name="hdCosmeticImage" Height="128" Width="128" Source="{Binding SelectedCosmetic.HDImage}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="3" Grid.Column="2"/>
-        <Button x:Name="browseHdCosmeticButton" Content="Browse..." Command="{Binding ReplaceHDCosmeticCommand}" Grid.Row="4" Grid.Column="2"/>
-        <Button x:Name="clearHdCosmeticButton" Content="Clear" Command="{Binding ClearHDCosmeticCommand}" Grid.Row="5" Grid.Column="2"/>
+
+        <Label Content="Image:" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" ToolTip.Tip="Image to use for cosmetic"/>
+        <Image Source="{Binding SelectedCosmetic.Image}" Width="128" Height="128" Grid.Row="3" Grid.Column="1"/>
+        <Button Content="Browse..." Command="{Binding ReplaceCosmeticCommand}" Grid.Row="4" Grid.Column="1"/>
+        <Button Content="Clear" Command="{Binding ClearCosmeticCommand}" Grid.Row="5" Grid.Column="1"/>
+
+        <Label Content="HD Image:" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" ToolTip.Tip="HD image to use for cosmetic"/>
+        <Image Source="{Binding SelectedCosmetic.HDImage}" Width="128" Height="128" Grid.Row="3" Grid.Column="2"/>
+        <Button Content="Browse..." Command="{Binding ReplaceHDCosmeticCommand}" Grid.Row="4" Grid.Column="2"/>
+        <Button Content="Clear" Command="{Binding ClearHDCosmeticCommand}" Grid.Row="5" Grid.Column="2"/>
     </Grid>
 </UserControl>

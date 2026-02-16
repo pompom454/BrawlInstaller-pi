@@ -34,3 +34,61 @@
         </TabControl>
     </Grid>
 </UserControl>
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:BrawlInstaller.Views"
+    xmlns:viewModels="clr-namespace:BrawlInstaller.ViewModels"
+    x:Class="BrawlInstaller.Views.MainView"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ContentControl 
+            x:Name="MainControlsView" 
+            Content="{Binding MainControlsViewModel}" 
+            Grid.Row="0" 
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Top"/>
+
+        <TabControl 
+            x:Name="MainTabControl" 
+            Grid.Row="1" 
+            SelectedIndex="0"
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch">
+
+            <TabItem Header="Fighters" IsEnabled="{Binding BuildSettingsExist}">
+                <ContentControl Content="{Binding FighterViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <TabItem Header="Stages" IsEnabled="{Binding BuildSettingsExist}">
+                <ContentControl Content="{Binding StageViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <TabItem Header="Music" IsEnabled="{Binding BuildSettingsExist}">
+                <ContentControl Content="{Binding TracklistViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <TabItem Header="Trophies" IsEnabled="{Binding BuildSettingsExist}">
+                <ContentControl Content="{Binding TrophyViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <TabItem Header="Files" x:Name="filesTab">
+                <ContentControl Content="{Binding FilesViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <TabItem Header="Settings" IsEnabled="{Binding BuildPathExists}">
+                <ContentControl Content="{Binding SettingsViewModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</UserControl>

@@ -1,26 +1,23 @@
-﻿<UserControl x:Class="BrawlInstaller.Views.FilesView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BrawlInstaller.Views"
              xmlns:resources="clr-namespace:BrawlInstaller.Resources"
              xmlns:userControls="clr-namespace:BrawlInstaller.UserControls"
              xmlns:behaviors="clr-namespace:BrawlInstaller.Behaviors"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:viewModels="clr-namespace:BrawlInstaller.ViewModels" d:DataContext="{d:DesignInstance Type=viewModels:FilesViewModel}"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:i="clr-namespace:Avalonia.Interactivity;assembly=Avalonia.Base"
+             x:Class="BrawlInstaller.Views.FilesView">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+
             <GroupBox Header="Compare Files" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <Grid>
@@ -33,10 +30,13 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
+
                         <Label x:Name="leftFileLabel" Content="Left File:"/>
-                        <userControls:FileBox x:Name="leftFileBox" TextBoxWidth="300" Text="{Binding LeftFilePath}" Filter="{Binding FileFilter, Mode=OneWay}" Grid.Column="1"/>
+                        <userControls:FileBox x:Name="leftFileBox" TextBoxWidth="300" Text="{Binding LeftFilePath}" Grid.Column="1"/>
+
                         <Label x:Name="rightFileLabel" Content="Right File:" Grid.Row="1"/>
-                        <userControls:FileBox x:Name="rightFileBox" TextBoxWidth="300" Text="{Binding RightFilePath}" Filter="{Binding FileFilter, Mode=OneWay}" Grid.Row="1" Grid.Column="1"/>
+                        <userControls:FileBox x:Name="rightFileBox" TextBoxWidth="300" Text="{Binding RightFilePath}" Grid.Row="1" Grid.Column="1"/>
+
                         <StackPanel Grid.Row="2">
                             <Button x:Name="compareButton" Content="Compare" Command="{Binding CompareFilesCommand}" IsEnabled="{Binding FilePathsEnabled}"/>
                             <Button x:Name="openButton" Content="Browse..." Command="{Binding OpenFilePatchCommand}"/>
@@ -44,6 +44,7 @@
                     </Grid>
                 </ScrollViewer>
             </GroupBox>
+
             <GroupBox Header="Build Patch" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <StackPanel>
                     <Grid>
@@ -51,14 +52,23 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ListBox x:Name="buildFileListBox" ItemsSource="{Binding BuildFilePatches}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="120" DisplayMemberPath="TargetPath" SelectedItem="{Binding SelectedBuildFilePatch}"/>
+
+                        <ListBox x:Name="buildFileListBox"
+                                 Items="{Binding BuildFilePatches}"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Stretch"
+                                 MinHeight="120"
+                                 SelectedItem="{Binding SelectedBuildFilePatch}"
+                                 DisplayMemberPath="TargetPath"/>
                         <StackPanel Grid.Column="1">
                             <Button x:Name="addBuildPatchFilesButton" Content="+" Style="{StaticResource miniButton}" Command="{Binding AddBuildPatchEntryCommand}"/>
                             <Button x:Name="removeBuildPatchFilesButton" Content="-" Style="{StaticResource miniButton}" Command="{Binding RemoveBuildPatchEntryCommand}"/>
                         </StackPanel>
                     </Grid>
+
                     <Button x:Name="buildFileBrowseButton" Content="Browse..." Command="{Binding OpenBuildPatchCommand}"/>
-                    <Grid Visibility="{Binding SelectedBuildFilePatch, Mode=OneWay, Converter={StaticResource nullVisConverter}, ConverterParameter={x:Static Visibility.Collapsed}}">
+
+                    <Grid Visibility="{Binding SelectedBuildFilePatch, Converter={StaticResource nullVisConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
@@ -72,46 +82,47 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Search for the file at this location... (ex. 'pf\menu2\sc_selcharacter.pac')" Grid.ColumnSpan="2"/>
+
+                        <TextBlock Text="Search for the file at this location..." Grid.ColumnSpan="2"/>
                         <Label Content="Path:" Grid.Row="1"/>
                         <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding SelectedBuildFilePatch.TargetPath}" Width="300"/>
                         <TextBlock Text="If the file is found, apply this patch..." Grid.Row="2" Grid.ColumnSpan="2"/>
                         <Label Content="Patch File:" Grid.Row="3"/>
-                        <userControls:FileBox x:Name="patchFileBox" TextBoxWidth="300" Text="{Binding SelectedBuildFilePatch.FilePatchPath}" Filter="File patch file (.fpatch)|*.fpatch" Grid.Column="1" Grid.Row="3"/>
+                        <userControls:FileBox x:Name="patchFileBox" TextBoxWidth="300" Text="{Binding SelectedBuildFilePatch.FilePatchPath}" Grid.Column="1" Grid.Row="3"/>
                         <TextBlock Text="If file is not found or there's no patch, install this file..." Grid.Row="4" Grid.ColumnSpan="2"/>
                         <Label Content="File:" Grid.Row="5"/>
-                        <userControls:FileBox x:Name="fileBox" TextBoxWidth="300" Text="{Binding SelectedBuildFilePatch.FilePath}" Filter="{Binding FileFilter, Mode=OneWay}" Grid.Column="1" Grid.Row="5"/>
-                        <CheckBox Content="Overwrite file if it exists" Grid.Row="6" Grid.ColumnSpan="2" IsChecked="{Binding SelectedBuildFilePatch.OverwriteIfFileExists}" ToolTip="Check to overwrite corresponding file if it exists in build and no patch is included"/>
+                        <userControls:FileBox x:Name="fileBox" TextBoxWidth="300" Text="{Binding SelectedBuildFilePatch.FilePath}" Grid.Column="1" Grid.Row="5"/>
+                        <CheckBox Content="Overwrite file if it exists" Grid.Row="6" Grid.ColumnSpan="2" IsChecked="{Binding SelectedBuildFilePatch.OverwriteIfFileExists}"/>
                     </Grid>
+
                     <Button x:Name="buildFileExportButton" Content="Save as..." Command="{Binding ExportBuildPatchCommand}"/>
-                    <Button x:Name="applyBuildFileButton" Content="Apply to Build" Width="Auto" Command="{Binding ApplyBuildPatchCommand}" IsEnabled="{Binding BuildSettingsExist}"/>
+                    <Button x:Name="applyBuildFileButton" Content="Apply to Build" Command="{Binding ApplyBuildPatchCommand}" IsEnabled="{Binding BuildSettingsExist}"/>
                 </StackPanel>
             </GroupBox>
         </Grid>
+
         <Separator Grid.Column="1" HorizontalAlignment="Left">
-            <Separator.LayoutTransform>
+            <Separator.RenderTransform>
                 <RotateTransform Angle="90"/>
-            </Separator.LayoutTransform>
+            </Separator.RenderTransform>
         </Separator>
+
         <Grid Grid.Column="1" Margin="3,0,0,0" Visibility="{Binding FilePatch, Converter={StaticResource nullVisConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+
             <ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+
                     <GroupBox Header="Changes" Height="{Binding ElementName=scrollViewer, Path=ViewportHeight}">
                         <ContentControl Style="{StaticResource resizeContainer}" MinWidth="140">
-                            <TreeView x:Name="treeView" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding NodeList}" >
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="SelectedItemChanged">
-                                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}" Command="{Binding SelectedItemChangedCommand}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                            <TreeView x:Name="treeView" Items="{Binding NodeList}">
                                 <TreeView.ItemTemplate>
                                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                         <StackPanel Orientation="Horizontal">
@@ -125,6 +136,7 @@
                             </TreeView>
                         </ContentControl>
                     </GroupBox>
+
                     <GroupBox Header="Node Info" Visibility="{Binding SelectedNode, Converter={StaticResource nullVisConverter}}" Grid.Column="1">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -137,34 +149,39 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <Label x:Name="nodeNameLabel" Content="Name:" ToolTip="Name of the node that was changed."/>
-                            <Label x:Name="nodeNameText" Content="{Binding SelectedNode.NodeDef.Name}" Grid.Column="1" HorizontalAlignment="Left"/>
-                            <Label x:Name="nodeTypeLabel" Content="Type:" Grid.Row="1" ToolTip="Type of node that was changed."/>
-                            <Label x:Name="nodeTypeText" Content="{Binding SelectedNode.NodeDef.TypeName}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
-                            <Label x:Name="nodeStatusLabel" Content="Status:" Grid.Row="2" ToolTip="Type of change that was performed on the node between the files that generated it."/>
-                            <Label x:Name="nodeStatusText" Content="{Binding SelectedNode.NodeDef.Change}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
-                            <StackPanel x:Name="nodeInfoStackPanel" Grid.Row="3" Grid.ColumnSpan="2">
-                                <CheckBox x:Name="forceAddCheckbox" IsChecked="{Binding SelectedNode.NodeDef.ForceAdd}" Content="Force Add" Visibility="{Binding SelectedNode.AllowForceAdd, Converter={StaticResource boolVisConverter}, ConverterParameter={x:Static Visibility.Collapsed}}" ToolTip="Always add this node when patch is applied, even if a matching node is found in the target file."/>
-                                <CheckBox x:Name="replaceAllContentsCheckBox" IsChecked="{Binding SelectedNode.NodeDef.ReplaceAllContents}" Content="Replace All Contents" Visibility="{Binding SelectedNode.AllowReplaceAllContents, Converter={StaticResource boolVisConverter}, ConverterParameter={x:Static Visibility.Collapsed}}" ToolTip="If a match is found, replace the entire archive with the one from the patch, including any contents that were within it in the original file from which it was created."/>
-                                <Image x:Name="previewImage" Height="128" Width="128" Source="{Binding SelectedNode.NodeDef.Image}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                                <TextBlock x:Name="colorSmashText" Text="{Binding SelectedNode.NodeDef.GroupName, StringFormat=Color smashed with {0}}" Visibility="{Binding SelectedNode.NodeDef.GroupName, Converter={StaticResource stringVisConverter}, ConverterParameter={x:Static Visibility.Collapsed}}"/>
+
+                            <Label Content="Name:"/>
+                            <Label Content="{Binding SelectedNode.NodeDef.Name}" Grid.Column="1" HorizontalAlignment="Left"/>
+                            <Label Content="Type:" Grid.Row="1"/>
+                            <Label Content="{Binding SelectedNode.NodeDef.TypeName}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
+                            <Label Content="Status:" Grid.Row="2"/>
+                            <Label Content="{Binding SelectedNode.NodeDef.Change}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
+
+                            <StackPanel Grid.Row="3" Grid.ColumnSpan="2">
+                                <CheckBox IsChecked="{Binding SelectedNode.NodeDef.ForceAdd}" Content="Force Add" Visibility="{Binding SelectedNode.AllowForceAdd, Converter={StaticResource boolVisConverter}}"/>
+                                <CheckBox IsChecked="{Binding SelectedNode.NodeDef.ReplaceAllContents}" Content="Replace All Contents" Visibility="{Binding SelectedNode.AllowReplaceAllContents, Converter={StaticResource boolVisConverter}}"/>
+                                <Image Height="128" Width="128" Source="{Binding SelectedNode.NodeDef.Image}"/>
+                                <TextBlock Text="{Binding SelectedNode.NodeDef.GroupName, StringFormat=Color smashed with {0}}" Visibility="{Binding SelectedNode.NodeDef.GroupName, Converter={StaticResource stringVisConverter}}"/>
                             </StackPanel>
                         </Grid>
                     </GroupBox>
                 </Grid>
             </ScrollViewer>
+
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+
                 <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <Label x:Name="targetFileLabel" Content="Target File:"/>
-                    <userControls:FileBox x:Name="targetFileBox" Text="{Binding TargetFilePath}" Filter="{Binding FileFilter, Mode=OneWay}" TextBoxWidth="300"/>
+                    <Label Content="Target File:"/>
+                    <userControls:FileBox Text="{Binding TargetFilePath}" Filter="{Binding FileFilter}" TextBoxWidth="300"/>
                 </WrapPanel>
+
                 <WrapPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
-                    <Button x:Name="exportButton" Content="Save as..." Command="{Binding ExportFilePatchCommand}"/>
-                    <Button x:Name="applyButton" Content="Apply to Target" Width="Auto" Command="{Binding ApplyFilePatchCommand}" IsEnabled="{Binding TargetFilePath, Converter={StaticResource emptyStringBoolConverter}}"/>
+                    <Button Content="Save as..." Command="{Binding ExportFilePatchCommand}"/>
+                    <Button Content="Apply to Target" Command="{Binding ApplyFilePatchCommand}" IsEnabled="{Binding TargetFilePath, Converter={StaticResource emptyStringBoolConverter}}"/>
                 </WrapPanel>
             </Grid>
         </Grid>

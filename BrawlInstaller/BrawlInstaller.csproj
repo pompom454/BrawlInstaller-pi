@@ -31,6 +31,7 @@
     <PackageReference Include="Velopack" Version="0.0.1053" />
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
     <PackageReference Include="System.Xml.XDocument" Version="4.3.0" />
+    <PackageReference Include="bodong.Avalonia.PropertyGrid" Version="11.3.11.1" />
   </ItemGroup>
 
   <ItemGroup>
