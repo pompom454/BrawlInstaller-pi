@@ -1,11 +1,12 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-                    xmlns:local="clr-namespace:BrawlInstaller.Resources">
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:BrawlInstaller.Resources"
+                    xmlns:conv="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base">
     <local:HexConverter x:Key="hexConverter"/>
     <local:ByteConverter x:Key="byteConverter"/>
     <local:FilePathConverter x:Key="filePathConverter"/>
     <local:FilePathNoExtensionConverter x:Key="filePathNoExtensionConverter"/>
-    <BooleanToVisibilityConverter x:Key="boolVisConverter"/>
+    <conv:BooleanToVisibilityConverter x:Key="boolVisConverter"/>
     <local:NullBoolConverter x:Key="nullBoolConverter"/>
     <local:NullVisibilityConverter x:Key="nullVisConverter"/>
     <local:NotNullVisibilityConverter x:Key="notNullVisConverter"/>
